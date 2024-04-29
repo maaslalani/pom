@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -36,6 +37,8 @@ const (
 )
 
 type Model struct {
+	demo bool
+
 	form     *huh.Form
 	quitting bool
 
@@ -140,6 +143,15 @@ func (m Model) View() string {
 	var s strings.Builder
 
 	elapsed := time.Now().Sub(m.startTime)
+	if m.demo {
+		switch m.mode {
+		case Focusing:
+			elapsed = 10*time.Minute + 2*time.Second
+		case Breaking:
+			elapsed = time.Minute + 50*time.Second
+		}
+	}
+
 	var percent float64
 	switch m.mode {
 	case Focusing:
@@ -203,6 +215,7 @@ func NewModel() Model {
 	progress.SetSpringOptions(1, 1)
 
 	return Model{
+		demo:     os.Getenv("DEMO") != "",
 		form:     form,
 		progress: progress,
 	}
