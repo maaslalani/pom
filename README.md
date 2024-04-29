@@ -2,9 +2,28 @@
 
 A pomodoro timer on the command line, built using [`huh?`](https://github.com/charmbracelet/huh).
 
+### Usage
+
 ```bash
 pom
 ```
+
+1. Select focus and break times.
+
+<p>
+  <img width="500" alt="Screenshot 2024-04-29 at 12 20 44 AM" src="https://github.com/maaslalani/pom/assets/42545625/a957deb0-ae2e-4b87-a7a0-1a5eff651a9f">
+  <img width="500" alt="Screenshot 2024-04-29 at 12 20 46 AM" src="https://github.com/maaslalani/pom/assets/42545625/8af0c027-4e9f-4621-bd1e-ace447e4a4c5">
+</p>
+
+2. Run the pomodoro session.
+
+<p>
+  <img width="500" alt="Screenshot 2024-04-29 at 12 20 47 AM" src="https://github.com/maaslalani/pom/assets/42545625/60fad7ed-b8a0-4835-9b7d-2372aa1c18f1">
+  <img width="500" alt="Screenshot 2024-04-29 at 12 20 52 AM" src="https://github.com/maaslalani/pom/assets/42545625/d774c48c-356d-4c02-bce4-6eed3acdab2a">
+</p>
+
+
+### Installation
 
 Install with Go:
 
