@@ -175,7 +175,7 @@ func (m Model) View() string {
 	return baseTimerStyle.Render(s.String())
 }
 
-func NewModel() Model {
+func NewModel() *Model {
 	theme := huh.ThemeCharm()
 	theme.Focused.Base.Border(lipgloss.HiddenBorder())
 	theme.Focused.Title.Foreground(lipgloss.Color(focusColor))
@@ -212,7 +212,7 @@ func NewModel() Model {
 	progress.FullColor = focusColor
 	progress.SetSpringOptions(1, 1)
 
-	return Model{
+	return &Model{
 		demo:     os.Getenv("DEMO") != "",
 		form:     form,
 		progress: progress,
@@ -221,7 +221,7 @@ func NewModel() Model {
 
 func main() {
 	m := NewModel()
-	_, err := tea.NewProgram(&m).Run()
+	_, err := tea.NewProgram(m).Run()
 	if err != nil {
 		log.Fatal(err)
 	}
