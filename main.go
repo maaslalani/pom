@@ -221,8 +221,7 @@ func NewModel() Model {
 
 func main() {
 	m := NewModel()
-	mm, err := tea.NewProgram(&m).Run()
-	m = mm.(Model)
+	_, err := tea.NewProgram(&m).Run()
 	if err != nil {
 		log.Fatal(err)
 	}
