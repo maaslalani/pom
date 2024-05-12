@@ -1,6 +1,6 @@
 # Pom
 
-A pomodoro timer on the command line, built using [`huh?`](https://github.com/charmbracelet/huh).
+A pomodoro timer on the command-line, built using [`huh?`](https://github.com/charmbracelet/huh).
 
 ### Usage
 
