@@ -22,7 +22,6 @@ var (
 	breakTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(breakColor)).MarginRight(1).SetString("Break Mode")
 	pausedStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color(breakColor)).MarginRight(1).SetString("Continue?")
 	helpStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).MarginTop(2)
-	sidebarStyle    = lipgloss.NewStyle().MarginLeft(3).Padding(1, 3).Border(lipgloss.RoundedBorder()).BorderForeground(helpStyle.GetForeground())
 )
 
 var baseTimerStyle = lipgloss.NewStyle().Padding(1, 2)
@@ -42,7 +41,6 @@ type Model struct {
 	form     *huh.Form
 	quitting bool
 
-	lastTick  time.Time
 	startTime time.Time
 
 	mode mode
