@@ -140,7 +140,7 @@ func (m Model) View() string {
 
 	var s strings.Builder
 
-	elapsed := time.Now().Sub(m.startTime)
+	elapsed := time.Since(m.startTime)
 	if m.demo {
 		switch m.mode {
 		case Focusing:
