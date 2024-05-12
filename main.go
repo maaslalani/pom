@@ -22,7 +22,6 @@ var (
 	breakTitleStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(breakColor)).MarginRight(1).SetString("Break Mode")
 	pausedStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color(breakColor)).MarginRight(1).SetString("Continue?")
 	helpStyle       = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).MarginTop(2)
-	sidebarStyle    = lipgloss.NewStyle().MarginLeft(3).Padding(1, 3).Border(lipgloss.RoundedBorder()).BorderForeground(helpStyle.GetForeground())
 )
 
 var baseTimerStyle = lipgloss.NewStyle().Padding(1, 2)
@@ -42,7 +41,6 @@ type Model struct {
 	form     *huh.Form
 	quitting bool
 
-	lastTick  time.Time
 	startTime time.Time
 
 	mode mode
@@ -142,7 +140,7 @@ func (m Model) View() string {
 
 	var s strings.Builder
 
-	elapsed := time.Now().Sub(m.startTime)
+	elapsed := time.Since(m.startTime)
 	if m.demo {
 		switch m.mode {
 		case Focusing:
@@ -177,7 +175,7 @@ func (m Model) View() string {
 	return baseTimerStyle.Render(s.String())
 }
 
-func NewModel() Model {
+func NewModel() *Model {
 	theme := huh.ThemeCharm()
 	theme.Focused.Base.Border(lipgloss.HiddenBorder())
 	theme.Focused.Title.Foreground(lipgloss.Color(focusColor))
@@ -210,21 +208,20 @@ func NewModel() Model {
 		),
 	).WithShowHelp(false).WithTheme(theme).WithWidth(20)
 
-	progress := progress.New()
-	progress.FullColor = focusColor
-	progress.SetSpringOptions(1, 1)
+	progressBar := progress.New()
+	progressBar.FullColor = focusColor
+	progressBar.SetSpringOptions(1, 1)
 
-	return Model{
+	return &Model{
 		demo:     os.Getenv("DEMO") != "",
 		form:     form,
-		progress: progress,
+		progress: progressBar,
 	}
 }
 
 func main() {
 	m := NewModel()
-	mm, err := tea.NewProgram(&m).Run()
-	m = mm.(Model)
+	_, err := tea.NewProgram(m).Run()
 	if err != nil {
 		log.Fatal(err)
 	}
