@@ -208,14 +208,14 @@ func NewModel() *Model {
 		),
 	).WithShowHelp(false).WithTheme(theme).WithWidth(20)
 
-	progress := progress.New()
-	progress.FullColor = focusColor
-	progress.SetSpringOptions(1, 1)
+	progressBar := progress.New()
+	progressBar.FullColor = focusColor
+	progressBar.SetSpringOptions(1, 1)
 
 	return &Model{
 		demo:     os.Getenv("DEMO") != "",
 		form:     form,
-		progress: progress,
+		progress: progressBar,
 	}
 }
 
