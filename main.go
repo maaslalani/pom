@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 	"strings"
 	"time"
 
@@ -36,9 +35,6 @@ const (
 )
 
 type Model struct {
-	demo bool
-
-	form     *huh.Form
 	quitting bool
 
 	startTime time.Time
@@ -52,7 +48,7 @@ type Model struct {
 }
 
 func (m Model) Init() tea.Cmd {
-	return m.form.Init()
+	return tea.Tick(tickInterval, tickCmd)
 }
 
 const tickInterval = time.Second / 2
@@ -95,32 +91,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	// Update form
-	f, cmd := m.form.Update(msg)
-	m.form = f.(*huh.Form)
-	cmds = append(cmds, cmd)
-	if m.form.State != huh.StateCompleted {
-		return m, tea.Batch(cmds...)
-	}
-
 	// Update timer
 	if m.startTime.IsZero() {
 		m.startTime = time.Now()
-		m.focusTime = m.form.Get("focus").(time.Duration)
-		m.breakTime = m.form.Get("break").(time.Duration)
 		m.mode = Focusing
 		cmds = append(cmds, tea.Tick(tickInterval, tickCmd))
 	}
 
 	switch m.mode {
 	case Focusing:
-		if time.Now().After(m.startTime.Add(m.focusTime)) {
+		if time.Since(m.startTime) > m.focusTime {
 			m.mode = Paused
 			m.startTime = time.Now()
 			m.progress.FullColor = breakColor
 		}
 	case Breaking:
-		if time.Now().After(m.startTime.Add(m.breakTime)) {
+		if time.Since(m.startTime) > m.breakTime {
 			m.quitting = true
 			return m, tea.Quit
 		}
@@ -134,21 +120,9 @@ func (m Model) View() string {
 		return ""
 	}
 
-	if m.form.State != huh.StateCompleted {
-		return m.form.View()
-	}
-
 	var s strings.Builder
 
 	elapsed := time.Since(m.startTime)
-	if m.demo {
-		switch m.mode {
-		case Focusing:
-			elapsed = 10*time.Minute + 2*time.Second
-		case Breaking:
-			elapsed = time.Minute + 50*time.Second
-		}
-	}
 
 	var percent float64
 	switch m.mode {
@@ -175,7 +149,17 @@ func (m Model) View() string {
 	return baseTimerStyle.Render(s.String())
 }
 
-func NewModel() *Model {
+func NewModel() Model {
+	progressBar := progress.New()
+	progressBar.FullColor = focusColor
+	progressBar.SetSpringOptions(1, 1)
+
+	return Model{
+		progress: progressBar,
+	}
+}
+
+func main() {
 	theme := huh.ThemeCharm()
 	theme.Focused.Base.Border(lipgloss.HiddenBorder())
 	theme.Focused.Title.Foreground(lipgloss.Color(focusColor))
@@ -183,10 +167,16 @@ func NewModel() *Model {
 	theme.Focused.SelectedOption.Foreground(lipgloss.Color("15"))
 	theme.Focused.Option.Foreground(lipgloss.Color("7"))
 
+	var (
+		focusTime time.Duration
+		breakTime time.Duration
+	)
+
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[time.Duration]().
 				Title("Focus Time").
+				Value(&focusTime).
 				Key("focus").
 				Options(
 					huh.NewOption("25 minutes", 25*time.Minute),
@@ -198,6 +188,7 @@ func NewModel() *Model {
 		huh.NewGroup(
 			huh.NewSelect[time.Duration]().
 				Title("Break Time").
+				Value(&breakTime).
 				Key("break").
 				Options(
 					huh.NewOption("5 minutes", 5*time.Minute),
@@ -208,20 +199,17 @@ func NewModel() *Model {
 		),
 	).WithShowHelp(false).WithTheme(theme).WithWidth(20)
 
-	progressBar := progress.New()
-	progressBar.FullColor = focusColor
-	progressBar.SetSpringOptions(1, 1)
-
-	return &Model{
-		demo:     os.Getenv("DEMO") != "",
-		form:     form,
-		progress: progressBar,
+	err := form.Run()
+	if err != nil {
+		log.Fatal(err)
 	}
-}
 
-func main() {
 	m := NewModel()
-	_, err := tea.NewProgram(m).Run()
+
+	m.focusTime = focusTime
+	m.breakTime = breakTime
+
+	_, err = tea.NewProgram(&m).Run()
 	if err != nil {
 		log.Fatal(err)
 	}
