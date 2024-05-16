@@ -11,8 +11,6 @@ pom
 1. Pick length of focus and break time.
 
 <table>
-<th>Focus Time</th>
-<th>Break Time</th>
 <td>
 <img width="600" alt="Screenshot 2024-04-29 at 12 20 44 AM" src="https://github.com/maaslalani/pom/assets/42545625/a957deb0-ae2e-4b87-a7a0-1a5eff651a9f">
 </td>
@@ -24,8 +22,6 @@ pom
 2. Work and Take a break.
 
 <table>
-<th>Focus</th>
-<th>Break</th>
 <td>
 <img width="600" alt="Screenshot 2024-04-29 at 12 20 47 AM" src="https://github.com/maaslalani/pom/assets/42545625/60fad7ed-b8a0-4835-9b7d-2372aa1c18f1">
 </td>
