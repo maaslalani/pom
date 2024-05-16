@@ -160,12 +160,19 @@ func NewModel() Model {
 }
 
 func main() {
-	theme := huh.ThemeCharm()
-	theme.Focused.Base.Border(lipgloss.HiddenBorder())
-	theme.Focused.Title.Foreground(lipgloss.Color(focusColor))
-	theme.Focused.SelectSelector.Foreground(lipgloss.Color(focusColor))
-	theme.Focused.SelectedOption.Foreground(lipgloss.Color("15"))
-	theme.Focused.Option.Foreground(lipgloss.Color("7"))
+	focusTheme := huh.ThemeCharm()
+	focusTheme.Focused.Base = focusTheme.Focused.Base.Border(lipgloss.HiddenBorder())
+	focusTheme.Focused.Title = focusTheme.Focused.Title.Foreground(lipgloss.Color(focusColor))
+	focusTheme.Focused.SelectSelector = focusTheme.Focused.SelectSelector.Foreground(lipgloss.Color(focusColor))
+	focusTheme.Focused.SelectedOption = focusTheme.Focused.SelectedOption.Foreground(lipgloss.Color("15"))
+	focusTheme.Focused.Option = focusTheme.Focused.Option.Foreground(lipgloss.Color("7"))
+
+	breakTheme := huh.ThemeCharm()
+	breakTheme.Focused.Base = breakTheme.Focused.Base.Border(lipgloss.HiddenBorder())
+	breakTheme.Focused.Title = breakTheme.Focused.Title.Foreground(lipgloss.Color(breakColor))
+	breakTheme.Focused.SelectSelector = breakTheme.Focused.SelectSelector.Foreground(lipgloss.Color(breakColor))
+	breakTheme.Focused.SelectedOption = breakTheme.Focused.SelectedOption.Foreground(lipgloss.Color("15"))
+	breakTheme.Focused.Option = breakTheme.Focused.Option.Foreground(lipgloss.Color("7"))
 
 	var (
 		focusTime time.Duration
@@ -184,7 +191,7 @@ func main() {
 					huh.NewOption("45 minutes", 45*time.Minute),
 					huh.NewOption("1 hour", time.Hour),
 				),
-		),
+		).WithTheme(focusTheme),
 		huh.NewGroup(
 			huh.NewSelect[time.Duration]().
 				Title("Break Time").
@@ -196,8 +203,8 @@ func main() {
 					huh.NewOption("15 minutes", 15*time.Minute),
 					huh.NewOption("20 minutes", 20*time.Minute),
 				),
-		),
-	).WithShowHelp(false).WithTheme(theme).WithWidth(20)
+		).WithTheme(breakTheme),
+	).WithShowHelp(false).WithWidth(20)
 
 	err := form.Run()
 	if err != nil {
